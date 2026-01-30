@@ -1,15 +1,23 @@
 export default async function handler(req, res) {
   try {
-    const productId = "154450819"; // Ben & Jerry’s Peanut Butter Half Baked Pint
-    const storeId = "2892"; // Walmart Gurnee, IL
+    const productId = "154450819"; 
+    const storeId = "2892"; 
 
     const url = `https://www.walmart.com/product-page/v3/price-offer?productId=${productId}&storeId=${storeId}`;
 
     const response = await fetch(url, {
       headers: {
-        "User-Agent": "Mozilla/5.0"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Origin": "https://www.walmart.com",
+        "Referer": "https://www.walmart.com/"
       }
     });
+
+    if (!response.ok) {
+      throw new Error("Walmart blocked the request");
+    }
 
     const data = await response.json();
 
@@ -24,6 +32,6 @@ export default async function handler(req, res) {
       availability
     });
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch Walmart price" });
+    res.status(500).json({ error: error.message });
   }
 }
