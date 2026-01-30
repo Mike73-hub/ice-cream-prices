@@ -7,16 +7,19 @@ export default async function handler(req, res) {
 
     const response = await fetch(url, {
       headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
         "Accept": "application/json, text/plain, */*",
         "Accept-Language": "en-US,en;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br",
         "Origin": "https://www.walmart.com",
-        "Referer": "https://www.walmart.com/"
+        "Referer": "https://www.walmart.com/",
+        "Connection": "keep-alive",
+        "Cookie": "ak_bmsc=12345; bmid=67890;"
       }
     });
 
     if (!response.ok) {
-      throw new Error("Walmart blocked the request");
+      return res.status(500).json({ error: "Walmart blocked the request" });
     }
 
     const data = await response.json();
