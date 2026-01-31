@@ -31,8 +31,7 @@ export default async function handler(req, res) {
         success: false,
         error: "JSON not found",
         walmartStatus: response.status
-     });
-
+      });
     }
 
     const jsonString = match[1];
