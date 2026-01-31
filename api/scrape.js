@@ -14,7 +14,12 @@ export default async function handler(req, res) {
     const match = html.match(regex);
 
     if (!match) {
-      return res.status(500).json({ success: false, error: "JSON not found" });
+      return res.status(500).json({
+        success: false,
+        error: "JSON not found",
+        walmartStatus: response.status
+     });
+
     }
 
     const jsonString = match[1];
