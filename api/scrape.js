@@ -10,14 +10,15 @@ export default async function handler(req, res) {
     });
 
     const html = await response.text();
-
     const $ = cheerio.load(html);
 
     const title = $("h1").text().trim();
+    const price = $(".price_color").text().trim();
 
     res.status(200).json({
       success: true,
-      title: title
+      title: title,
+      price: price
     });
   } catch (error) {
     res.status(500).json({
