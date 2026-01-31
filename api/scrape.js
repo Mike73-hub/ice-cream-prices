@@ -1,8 +1,6 @@
-import * as cheerio from "cheerio";
-
 export default async function handler(req, res) {
   try {
-    const response = await fetch("https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html", {
+    const response = await fetch("https://www.walmart.com/ip/154450819", {
       headers: {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
         "Accept": "text/html,application/xhtml+xml"
@@ -10,23 +8,32 @@ export default async function handler(req, res) {
     });
 
     const html = await response.text();
-    const $ = cheerio.load(html);
 
-    const title = $("h1").text().trim();
-    const price = $(".price_color").text().trim();
+    // Extract Walmart JSON
+    const regex = /window\.__WML_REDUX_INITIAL_STATE__\s*=\s*(\{.*?\});/s;
+    const match = html.match(regex);
 
-    let imgSrc = $(".item.active img").attr("src");
-    imgSrc = imgSrc ? imgSrc.replace("../../", "https://books.toscrape.com/") : null;
+    if (!match) {
+      return res.status(500).json({ success: false, error: "JSON not found" });
+    }
 
-    const availability = $(".instock.availability").text().trim();
+    const jsonString = match[1];
+    const data = JSON.parse(jsonString);
+
+    // Extract fields
+    const product = data.product.primaryProduct;
+
+    const title = product.name;
+    const price = product.price.currentPrice;
+    const image = product.imageInfo?.thumbnailUrl;
 
     res.status(200).json({
       success: true,
       title,
       price,
-      image: imgSrc,
-      availability
+      image
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
