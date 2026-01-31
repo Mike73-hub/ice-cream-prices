@@ -9,8 +9,8 @@ export default async function handler(req, res) {
 
     const html = await response.text();
 
-    // Extract Walmart JSON
-    const regex = /window\.__WML_REDUX_INITIAL_STATE__\s*=\s*(\{.*?\});/s;
+    // Flexible Walmart JSON regex
+    const regex = /window\.__WML_[A-Z0-9_]+\s*=\s*(\{.*?\});/s;
     const match = html.match(regex);
 
     if (!match) {
@@ -20,12 +20,12 @@ export default async function handler(req, res) {
     const jsonString = match[1];
     const data = JSON.parse(jsonString);
 
-    // Extract fields
-    const product = data.product.primaryProduct;
+    // Walmart product data lives here
+    const product = data.product?.primaryProduct;
 
-    const title = product.name;
-    const price = product.price.currentPrice;
-    const image = product.imageInfo?.thumbnailUrl;
+    const title = product?.name;
+    const price = product?.price?.currentPrice;
+    const image = product?.imageInfo?.thumbnailUrl;
 
     res.status(200).json({
       success: true,
@@ -33,7 +33,6 @@ export default async function handler(req, res) {
       price,
       image
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
