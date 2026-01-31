@@ -15,15 +15,17 @@ export default async function handler(req, res) {
     const title = $("h1").text().trim();
     const price = $(".price_color").text().trim();
 
-    // Extract image URL
     let imgSrc = $(".item.active img").attr("src");
     imgSrc = imgSrc ? imgSrc.replace("../../", "https://books.toscrape.com/") : null;
 
+    const availability = $(".instock.availability").text().trim();
+
     res.status(200).json({
       success: true,
-      title: title,
-      price: price,
-      image: imgSrc
+      title,
+      price,
+      image: imgSrc,
+      availability
     });
   } catch (error) {
     res.status(500).json({
