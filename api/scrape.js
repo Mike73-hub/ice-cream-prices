@@ -4,6 +4,7 @@ export default async function handler(req, res) {
       headers: {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
         "Accept": "text/html,application/xhtml+xml"
+        "Accept-Language": "en-US,en;q=0.9"
       }
     });
 
